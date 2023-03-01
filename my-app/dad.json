@@ -1,0 +1,30 @@
+{
+  "base": "stations",
+  "clouds": { "all": 0 },
+  "cod": 200,
+  "coord": { "lat": 37.2836, "lon": 127.046 },
+  "dt": 1677149129,
+  "id": 6573030,
+  "main": {
+    "feels_like": 0.71,
+    "humidity": 52,
+    "pressure": 1022,
+    "temp": 4.35,
+    "temp_max": 5.56,
+    "temp_min": 2.32
+  },
+  "name": "Namhyang-dong",
+  "sys": {
+    "country": "KR",
+    "id": 5509,
+    "sunrise": 1677103936,
+    "sunset": 1677143919,
+    "type": 1
+  },
+  "timezone": 32400,
+  "visibility": 10000,
+  "weather": [
+    { "description": "clear sky", "icon": "01n", "id": 800, "main": "Clear" }
+  ],
+  "wind": { "deg": 290, "speed": 4.63 }
+}
