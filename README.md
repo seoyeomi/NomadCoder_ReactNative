@@ -180,11 +180,11 @@ ex)
 
 3. hitSlope:요소 바깥 어디까지 탭 누르는 것을 감지할지 정한다.
 
-comment를 통한 정리: [https://docs.expo.dev/versions/v44.0.0/react-native/pressable/]
+[comment를 통한 정리](https://docs.expo.dev/versions/v44.0.0/react-native/pressable/)
 
 ### 3.2 TextInput
 
-1. keyboardType을 줄 수 있다. [https://lefkowitz.me/visual-guide-to-react-native-textinput-keyboardtype-options/] (다양한 속성을 설정할 수 있다.)
+1. [keyboardType을 줄 수 있다.](https://lefkowitz.me/visual-guide-to-react-native-textinput-keyboardtype-options/) (다양한 속성을 설정할 수 있다.)
 
 ### 3.3 To Dos (Text저장) --- 헷갈리는 강의.
 
@@ -206,4 +206,66 @@ _3개의 object를 결합하기 위해 object assign을 사용했다_
     });
 ```
 
-(Hash Table)[https://www.youtube.com/watch?v=HraOg7W3VAM]
+[Hash Table](https://www.youtube.com/watch?v=HraOg7W3VAM)
+
+### 3.5 Persist
+
+- ScrollView를 import하였고 이 태그 안에서 Object.keys 사용으로 toDos 목록을 보여준다.
+- expo -> AsyncStorage module을 가지고 있다. 따라서 설치 후 import를 해준다.
+- JSON.stringify : object를 string으로 바꿔준다.
+- parse : string을 Javascript object로 만들어준다.
+- <b>실제 앱으로 만들 경우, 항상 try catch문을 사용하는 것이 매우 중요하다</b>
+
+<잘 모르겠는 개념:await, async, object, ..., then >
+
+---
+
+[개념정리]  
+`동기(Synchronous)`: 순서가 존재
+-> func1, func2가 존재한다면 func1이 실행종료된 후에 func2가 실행된다는 의미인데 이는 `blocking`에 의해 가능하다.  
+`비동기(Asynchronous)`: 순서가 존재하지 않음
+-> 함수나 메소드가 진행중이든 아니든 바로 실행한다.
+
+참고로 함수나 메소드가 종료되면 그 결과 값을 callback()함수에 넣어주는데, 이후 다른 메소드에서 그 결과값을 필요로 할 경우 callback()함수를 호출한다.
+
+그래서 이 동기/비동기 개념, 즉 await&async 개념이 필요한이유는 <b>화면에서 서버로 데이터를 요청했을 때 서버가 언제 그 요청에 대한 응답을 보내줄 지 모르는 상태로 계속 기다릴 수 없기 때문</b>이다.
+
+`Callback hell` : 웹 서비스를 개발하는 중에 서버에서 data를 받아와 화면에 표시하기까지 인코딩, 사용자 인증 등을 처리해야 하는 경우가 있다. -> 모두 비동기로 처리할 시, callback 안에 callback을 계속 다는 형식으로 코드를 작성하게 된다.
+이러한 코드는 가독성 저하 + 로직 변경이 어렵다.
+
+> resolution: 1. Promise 2. Async
+
+- async & await 기본문법
+
+1. 함수 앞에 async라는 예약어를 붙인다.
+2. 함수 내부 로직 중 HTTP 통신을 하는 비동기 처리 코드 앞에 await를 붙인다.
+
+### 3.6 Delete (삭제 + Alert API)
+
+- state는 절대 mutate하지 말 것!!!
+- 삭제 버튼을 누르면, alert가 뜨도록 하고 싶은데 이 때 Alert를 import해주어야 한다. (->나의 경우 react-native가 아닌 react에 import해서 오류 발생함)
+- Android의 경우 Alert.prompt가 존재하지 않으므로 Alert.alert(제목o 메세지o 버튼o)로 작성한다.
+- 삭제 버튼을 누를 시 AlertButtonStyle을 줄 수도 있는데, style="destructive" 와 같이 작성하면 버튼글씨 색깔을 바꿀 수 있다.
+
+```js
+const delteToDo = async (key) => {
+  Alert.alert("Delete To Do?", "Are u Sure?", [
+    { text: "Cancel" },
+    {
+      text: "Delete",
+      onPress: () => {
+        const newToDos = { ...toDos }; //object 생성
+        delete newToDos[key]; //object에서 key 삭제
+        setToDos(newToDos);
+        saveToDos(newToDos);
+      },
+    },
+  ]);
+};
+```
+
+다음과 같이 delete기능을 추가할 수 있다.
+여기서 Alert 문구를 통해 텍스트를 띄우고, Delete 텍스트에 Onpress event가 감지될 시에 삭제가 된다.
++saveToDos(newToDos)를 통해 새로고침을 해도 이전 내용이 그대로 반영됨을 확인할 수 있다.
+
+
