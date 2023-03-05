@@ -268,4 +268,61 @@ const delteToDo = async (key) => {
 여기서 Alert 문구를 통해 텍스트를 띄우고, Delete 텍스트에 Onpress event가 감지될 시에 삭제가 된다.
 +saveToDos(newToDos)를 통해 새로고침을 해도 이전 내용이 그대로 반영됨을 확인할 수 있다.
 
+### 3.7 Recap
 
+1. 💫 모든 요소의 시작은 header 에서부터 !!
+
+TouchableOpacity 두 개가 존재함 -> Work와 Travel 를 구현
+
+> TouchableOpacity : 애니메이션+멋진event가 있는 View
+> onPress 속성을 사용함
+
+2. 이후 const work ~, const travel ~을 통해 해당 글자를 눌렀을 때 true 또는 false로 설정하게 함
+   -> working이 true냐 false냐에 따라 TextInput의 placeholder가 다르게 나타남.
+
+3. TextInput의 나머지 속성들)  
+   returnKeyType : return key의 type을 설정할 수 있도록 함
+   onChangeText : text가 바뀔 때 실행되는 함수 (setText를 통해 text를 받아서 state에 text를 담아준다.)
+   onSubmitEditing : 사용자가 done 버튼을 눌렀을 때 실행되는 함수(text가 비어있는 경우 즉 toDos가 empty이면 dont do anything / toDos에 text가 있으면 새로운 object를 만든다. _기존toDos에 담겨 있던 content와 stat에 새로 추가된 요소들을 결합해서 만들어줌_ )
+   이 속성을 통해서 기존에 toDos가 존재한다면 새 toDos를 만들어주는데, text를 입력함과 동시에 working의 상태도 함께 set된다. !!!
+
+4. ```js
+   const saveToDos = async (toSave) => {
+     await AsnyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+   };
+   ```
+
+   에서와 같이 saveToDos는 AsyncStorage를 사용하는데,웹에서 사용하는 local storage와 비슷함.
+   이 단계에서는 error가 발생하는지 알려주어야 하는데, 핸드폰의 디스크에 접근하므로 await async 방법을 활용한다.
+
+5. ScrollView : 스크롤 기능 제공
+   > Object.keys() : key값들만 담긴 배열을 반환함(only key).
+
+```js
+<ScrollView>
+  {Object.keys(toDos).map((key) =>
+    toDos[key].working === working ? (
+      <View style={styles.toDo} key={key}>
+        <Text style={styles.toDoText}>{toDos[key].text}</Text>
+        <TouchableOpacity onPress={() => delteToDo(key)}>
+          <Fontisto name="trash" size={18} color={"white"} />
+        </TouchableOpacity>
+      </View>
+    ) : null
+  )}
+</ScrollView>
+```
+
+Object.keys()에 먼저 담아놓은 toDos에 접근하고, map을 통해 key값의 배열을 확인한다.
+각각의 key에서, 우리는 toDos 오브젝트에 접근하여 toDo의 working 값이 state의 working과 동일한지 파악한다.
+
+TouchableOpacity속성에서 onPress function을 이용하여 toDo를 delete하고 key를 보내준다.
+
+6. delteToDo()를 살펴보면 Alert가 존재하고, Text에 따라 보여지는 내용을 다르게 한다. ->기본적으로 callback을 정해주지 않으면 아무 일도 일어나지 않음.
+
+   > Delete 버튼을 눌렀을 때에만(onPress) 이후 내용을 실행하도록 작성함.
+   > toDos를 가지고 오고, delete하고, delete하고 난 toDos들을 setToDos를 통해 업데이트하고, save함!!
+
+7. 애플리케이션이 재시작 되면, useEffect()를 통해 loadToDos()를 실행시키는데, 이를 호출함으로써 받아온 toDo들을 parse하여 오브젝트로 만듦. 
+
+<JSON.stringify()는 자바스크립트 오브젝트를 받아 string으로 만들어준다.>

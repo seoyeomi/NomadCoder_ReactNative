@@ -91,7 +91,9 @@ export default function App() {
         returnKeyType="done"
         value={text}
         autoCapitalize={"sentences"}
-        placeholder={working ? "Add a To Do" : "Where do u wanna Go ? "}
+        placeholder={
+          working ? "What do u have to do ?" : "Where do u wanna Go ? "
+        }
         style={styles.input}
       />
       <ScrollView>
